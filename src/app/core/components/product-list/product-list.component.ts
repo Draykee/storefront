@@ -114,9 +114,9 @@ export class ProductListComponent implements OnInit {
             }),
         );
 
-        const triggerFetch$ = combineLatest(this.collection$, this.activeFacetValueIds$, this.searchTerm$, this.refresh);
+        const triggerFetch$ = combineLatest([this.collection$, this.activeFacetValueIds$, this.searchTerm$, this.refresh]);
         const getInitialFacetValueIds = () => {
-            combineLatest(this.collection$, this.searchTerm$).pipe(
+            combineLatest([this.collection$, this.searchTerm$]).pipe(
                 take(1),
                 switchMap(([collection, term]) => {
                     return this.dataService.query<SearchProducts.Query, SearchProducts.Variables>(SEARCH_PRODUCTS, {
@@ -186,7 +186,7 @@ export class ProductListComponent implements OnInit {
             }, [] as SearchProducts.Items[]),
         );
         this.totalResults$ = queryResult$.pipe(map(data => data.search.totalItems));
-        this.displayLoadMore$ = combineLatest(this.products$, this.totalResults$).pipe(
+        this.displayLoadMore$ = combineLatest([this.products$, this.totalResults$]).pipe(
             map(([products, totalResults]) => {
                 return 0 < products.length && products.length < totalResults;
             }),
